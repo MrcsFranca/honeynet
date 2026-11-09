@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Honeynet Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header class="topbar">
+        <div>
+            <h1>Honeynet</h1>
+            <p>Central de monitoramento de eventos</p>
+        </div>
+
+        <div class="connection">
+            <span id="api-indicator" class="indicator"></span>
+            <span id="api-status">Conectando...</span>
+        </div>
+    </header>
+
+    <main>
+        <section class="metrics">
+            <article class="metric-card">
+                <span>Total de eventos</span>
+                <strong id="total-events">—</strong>
+            </article>
+
+            <article class="metric-card">
+                <span>Sensores identificados</span>
+                <strong id="total-sensors">—</strong>
+            </article>
+
+            <article class="metric-card">
+                <span>Sessões SSH</span>
+                <strong id="total-sessions">—</strong>
+            </article>
+
+            <article class="metric-card">
+                <span>Tentativas de login</span>
+                <strong id="total-logins">—</strong>
+            </article>
+        </section>
+
+        <section class="charts">
+            <article class="panel">
+                <h2>Eventos por sensor</h2>
+                <div id="sensor-chart" class="bar-chart"></div>
+            </article>
+
+            <article class="panel">
+                <h2>Tipos de eventos</h2>
+                <div id="event-chart" class="bar-chart"></div>
+            </article>
+        </section>
+
+        <section class="panel events-panel">
+            <div class="section-heading">
+                <div>
+                    <h2>Eventos recentes</h2>
+                    <p>Últimos registros recebidos pelo Collector</p>
+                </div>
+                <span id="last-update">Aguardando dados...</span>
+            </div>
+
+            <div class="filters">
+                <select id="sensor-filter">
+                    <option value="">Todos os sensores</option>
+                </select>
+
+                <select id="event-filter">
+                    <option value="">Todos os eventos</option>
+                </select>
+
+                <input
+                    type="search"
+                    id="search-filter"
+                    placeholder="Pesquisar eventos..."
+                >
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Horário</th>
+                            <th>Sensor</th>
+                            <th>Evento</th>
+                            <th>IP de origem</th>
+                            <th>Detalhes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="events-table">
+                        <tr>
+                            <td colspan="5">Carregando eventos...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        Honeynet — Monitoramento de eventos SSH
+    </footer>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

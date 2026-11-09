@@ -1,0 +1,76 @@
+services:
+  sensor-01:
+    image: cowrie/cowrie:latest
+    ports:
+      - "127.0.0.1:2222:2222"
+    volumes:
+      - cowrie-logs-01:/cowrie/cowrie-git/var
+      - cowrie-etc-01:/cowrie/cowrie-git/etc
+    networks:
+      - honeynet
+
+  sensor-02:
+    image: cowrie/cowrie:latest
+    ports:
+      - "127.0.0.1:2224:2222"
+    volumes:
+      - cowrie-logs-02:/cowrie/cowrie-git/var
+      - cowrie-etc-02:/cowrie/cowrie-git/etc
+    networks:
+      - honeynet
+
+  collector:
+    build: ./collector
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      DB_PATH: /data/events.db
+    volumes:
+      - collector-data:/data
+    networks:
+      - telemetry
+
+  agent-01:
+    build: ./agents
+    environment:
+      LOG_PATH: /logs/log/cowrie/cowrie.json
+      STATE_PATH: /state/offset
+      COLLECTOR_URL: http://collector:8000/events
+    volumes:
+      - cowrie-logs-01:/logs:ro
+      - agent-state-01:/state
+    depends_on:
+      - collector
+    networks:
+      - honeynet
+      - telemetry
+
+  agent-02:
+    build: ./agents
+    environment:
+      LOG_PATH: /logs/log/cowrie/cowrie.json
+      STATE_PATH: /state/offset
+      COLLECTOR_URL: http://collector:8000/events
+    volumes:
+      - cowrie-logs-02:/logs:ro
+      - agent-state-02:/state
+    depends_on:
+      - collector
+    networks:
+      - honeynet
+      - telemetry
+
+volumes:
+  cowrie-logs-01:
+  cowrie-logs-02:
+  cowrie-etc-01:
+  cowrie-etc-02:
+  collector-data:
+  agent-state-01:
+  agent-state-02:
+
+networks:
+  honeynet:
+    driver: bridge
+  telemetry:
+    driver: bridge
